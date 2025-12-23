@@ -2,8 +2,11 @@ import pandas as pd
 import time
 
 class CSVLoader():
-    def __init__(self, path: str):
-        self.path = path
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+    # def __init__(self, path: str, encoding: str, delimiter: str):
+    #     self.path = path
 
     def extract(self):
         df = pd.read_csv(self.path)        

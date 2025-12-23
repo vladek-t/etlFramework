@@ -1,6 +1,5 @@
 from connectors.csv_loader import CSVLoader
 
-
 class SimpleEtl():
     def __init__(self, type: str, **kwargs):
         self._initialized_attrs = set()
@@ -9,10 +8,12 @@ class SimpleEtl():
         self.loaders = {
             'csv':{
                 'class': CSVLoader,
-                'required_params': ['path', 'main'],
+                'required_params': ['path'],
                 'optional_params': {'delimiter': ',', 'encoding': 'utf-8'}
             }
         }
+
+        self.all_params = self.loaders[self.type]['optional_params'] | kwargs
 
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -21,14 +22,12 @@ class SimpleEtl():
 
     def check_all_params(self):
         required_params = self.loaders[self.type]['required_params']
-        optional_params = self.loaders[self.type]['optional_params']
-
-        # print(all(elem in self._initialized_attrs for elem in required_params))
         return all(elem in self._initialized_attrs for elem in required_params)
 
     def run(self):
         if not self.check_all_params():
-            raise ValueError(f"Need required params")
+            required_params = self.loaders[self.type]['required_params']
+            raise ValueError(f"Not all required attributes are listed. \nAll required attributes {required_params}")
 
         # try:
         #     loader_class = self.loaders[self.type]
@@ -41,6 +40,17 @@ class SimpleEtl():
         #     raise ValueError(f"Need required params: {required_params}")
 
 
-etl = SimpleEtl('csv', path='files/csv1.csv')
+# Тест 1: Конфликт имен
+etl = SimpleEtl('csv', type='json', loaders={}, _initialized_attrs=set())
+# Что будет с self.type? А с self.loaders?
+
+# Тест 2: Лишние параметры в CSVLoader
+# loader = CSVLoader(path='test.csv', unknown_param='value')
+# Будет ли работать? Нужно ли это?
+
+# Тест 3: Отсутствие optional_params в атрибутах
+# etl = SimpleEtl('csv', path='test.csv')
+# Есть ли у etl атрибут 'encoding' со значением 'utf-8'?
+
+# etl = SimpleEtl('csv', path='files/csv1.csv')
 # etl.run()
-etl.run()
