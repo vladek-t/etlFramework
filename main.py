@@ -1,27 +1,40 @@
-import pandas as pd
+from connectors.csv_loader import CSVLoader
 
-class SimpleETL():
-    def __init__():
-        pass
 
-    def extract(self, path, type):
-        if type == 'csv':
-            df = pd.read_csv(path)
-        
-        return df
+class SimpleEtl():
+    def __init__(self, type: str, **kwargs):
+        self._initialized_attrs = set()
 
-    def transform(self, path, type):
-        df = self.extract(path, type)
-        df['col4'] = df['col1'] + df['col3']
-        return df
+        self.type = type
+        self.loaders = {
+            'csv':{
+                'class': CSVLoader,
+                'required_params': ['path'],
+                'optional_params': {'delimiter': ',', 'encoding': 'utf-8'}
+            }
+        }
 
-    def load(self, path, type):
-        df = self.transform(path, type)
-        df.to_csv('files/csv2.csv', index=False)
-        print(f'File: csv2.csv has been created')
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+            self._initialized_attrs.add(key)
 
-    def run(self, path, type):
-        self.load(path, type)
 
-etl = SimpleETL()
-etl.run('files/csv1.csv', 'csv')
+    def check_all_params(self):
+        for i in self._initialized_attrs:
+            print(i)
+
+    def run(self):
+        try:
+            loader_class = self.loaders[self.type]
+        except KeyError:
+            # Покажи пользователю, какие типы доступны
+            available = list(self.loaders.keys())
+            raise ValueError(f"Unsupported type '{self.type}'. Available: {available}")
+        except TypeError:
+            required_params = loader_class['required_params']
+            raise ValueError(f"Need required params: {required_params}")
+
+
+etl = SimpleEtl('csv', path='files/csv1.csv')
+# etl.run()
+etl.check_all_params()
