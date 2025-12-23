@@ -1,6 +1,9 @@
 import pandas as pd
 
 class SimpleETL():
+    def __init__():
+        pass
+
     def extract(self, path, type):
         if type == 'csv':
             df = pd.read_csv(path)
