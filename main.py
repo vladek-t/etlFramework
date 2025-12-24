@@ -13,7 +13,7 @@ class SimpleEtl():
             }
         }
 
-        self.all_params = self.loaders[self.type]['optional_params'] | kwargs
+        self.all_params = kwargs | self.loaders[self.type]['optional_params']
 
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -22,7 +22,14 @@ class SimpleEtl():
 
     def check_all_params(self):
         required_params = self.loaders[self.type]['required_params']
-        return all(elem in self._initialized_attrs for elem in required_params)
+        optional_params = self.loaders[self.type]['optional_params']
+
+        loader_all_params = required_params | optional_params
+
+        check = all(elem in loader_all_params for elem in self.all_params)
+        print(check)
+
+        # return all(elem in self._initialized_attrs for elem in required_params)
 
     def run(self):
         if not self.check_all_params():
@@ -40,17 +47,6 @@ class SimpleEtl():
         #     raise ValueError(f"Need required params: {required_params}")
 
 
-# Тест 1: Конфликт имен
-etl = SimpleEtl('csv', type='json', loaders={}, _initialized_attrs=set())
-# Что будет с self.type? А с self.loaders?
 
-# Тест 2: Лишние параметры в CSVLoader
-# loader = CSVLoader(path='test.csv', unknown_param='value')
-# Будет ли работать? Нужно ли это?
-
-# Тест 3: Отсутствие optional_params в атрибутах
-# etl = SimpleEtl('csv', path='test.csv')
-# Есть ли у etl атрибут 'encoding' со значением 'utf-8'?
-
-# etl = SimpleEtl('csv', path='files/csv1.csv')
-# etl.run()
+etl = SimpleEtl('csv', path='files/csv1.csv')
+etl.check_all_params()
