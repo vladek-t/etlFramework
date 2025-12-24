@@ -2,8 +2,6 @@ from connectors.csv_loader import CSVLoader
 
 class SimpleEtl():
     def __init__(self, type: str, **kwargs):
-        self._initialized_attrs = set()
-
         self.type = type
         self.loaders = {
             'csv':{
@@ -13,28 +11,33 @@ class SimpleEtl():
             }
         }
 
+        required_params = self.loaders[self.type]['required_params']
+        optional_params = self.loaders[self.type]['optional_params'].keys()
+        self.allowed_params = set(required_params) | set(optional_params)
+
         self.all_params = kwargs | self.loaders[self.type]['optional_params']
 
         for key, value in kwargs.items():
             setattr(self, key, value)
-            self._initialized_attrs.add(key)
 
 
     def check_all_params(self):
-        required_params = self.loaders[self.type]['required_params']
-        optional_params = self.loaders[self.type]['optional_params']
-
-        loader_all_params = required_params | optional_params
-
-        check = all(elem in loader_all_params for elem in self.all_params)
-        print(check)
-
-        # return all(elem in self._initialized_attrs for elem in required_params)
+        check = list(set(self.all_params) ^ set(self.allowed_params))
+        return check
 
     def run(self):
-        if not self.check_all_params():
-            required_params = self.loaders[self.type]['required_params']
-            raise ValueError(f"Not all required attributes are listed. \nAll required attributes {required_params}")
+        check_params = self.check_all_params()
+        if check_params:
+            raise ValueError(f'''
+Not all required arguments are filled in or there are extra ones
+List of errors: {check_params}
+Required and optional params: {self.allowed_params}''')
+        else:
+            print('Все ок')
+
+        # if not self.check_all_params():
+        #     required_params = self.loaders[self.type]['required_params']
+        #     raise ValueError(f"Not all required attributes are listed. \nAll required attributes {required_params}")
 
         # try:
         #     loader_class = self.loaders[self.type]
@@ -48,5 +51,16 @@ class SimpleEtl():
 
 
 
-etl = SimpleEtl('csv', path='files/csv1.csv')
-etl.check_all_params()
+# Случай 1: Все правильно
+# etl = SimpleEtl('csv', path='test.csv', delimiter=';')
+
+# Случай 2: Не хватает обязательного
+# etl = SimpleEtl('csv', delimiter=';')
+
+# Случай 3: Лишний параметр
+# etl = SimpleEtl('csv', path='test.csv', unknown='value')
+
+# Случай 4: Перезапись атрибута
+# etl = SimpleEtl('csv', path='test.csv', type='json')
+
+# etl.run()
