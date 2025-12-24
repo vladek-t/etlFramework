@@ -5,11 +5,10 @@ class CSVLoader():
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             setattr(self, key, value)
-    # def __init__(self, path: str, encoding: str, delimiter: str):
-    #     self.path = path
+            print(f"key: {key}, value: {value}")
 
     def extract(self):
-        df = pd.read_csv(self.path)        
+        df = pd.read_csv(self.source_path)        
         return df
 
     def transform(self):
@@ -19,7 +18,7 @@ class CSVLoader():
 
     def load(self):
         df = self.transform()
-        df.to_csv('files/csv2.csv', index=False)
+        df.to_csv(path_or_buf=self.target_path, index=False)
         print(f'File: csv2.csv has been created')
 
     def run(self):
