@@ -1,0 +1,34 @@
+from db_connect import Database
+from loguru import logger
+
+class InitDatabase(Database):
+    def __init__(self):
+        super().__init__()
+        logger.info(f"Подключение к БД установлено")
+
+    def create_meta_table(self, file_path='sql/create_table.sql'):
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                sql_script = f.read()
+            self.cursor.executescript(sql_script)
+            self.conn.commit()
+            logger.info(f"SQL-скрипт {file_path} выполнен успешно")
+        except Exception as e:
+            logger.error(f"Ошибка при выполнении скрипта {file_path}: {e}")
+            raise
+    
+    def drop_meta_table(self, file_path='sql/drop_table.sql'):
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                sql_script = f.read()
+            self.cursor.executescript(sql_script)
+            self.conn.commit()
+            logger.info(f"SQL-скрипт {file_path} выполнен успешно")
+        except Exception as e:
+            logger.error(f"Ошибка при выполнении скрипта {file_path}: {e}")
+            raise
+
+init_db = InitDatabase()
+init_db.drop_meta_table()
+init_db.create_meta_table()
+init_db.close_connection()
