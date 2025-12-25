@@ -1,5 +1,5 @@
-import connectors
-from connectors.registry_connectors import get_loader
+import loaders
+from loaders.registry_loaders import get_loader
 
 class SimpleEtl():
     def __init__(self, type: str, **kwargs):

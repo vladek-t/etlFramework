@@ -3,8 +3,8 @@
 """
 
 import pandas as pd
-from connectors.dataloader import DataLoader
-from connectors.registry_connectors import register_loaders
+from loaders.dataloader import DataLoader
+from loaders.registry_loaders import register_loaders
 from loguru import logger
 
 class CSVLoader(DataLoader):
