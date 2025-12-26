@@ -27,8 +27,7 @@ class InitDatabase(Database):
         except Exception as e:
             logger.error(f"Ошибка при выполнении скрипта {file_path}: {e}")
             raise
-
-init_db = InitDatabase()
-init_db.drop_meta_table()
-init_db.create_meta_table()
-init_db.close_connection()
+    
+    def run(self):
+        self.create_meta_table()
+        self.close_connection()
