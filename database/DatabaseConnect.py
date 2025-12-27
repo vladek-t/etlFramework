@@ -4,13 +4,13 @@
 
 from loguru import logger
 import psycopg2
-from DatabaseConfig import PG_DBNAME, PG_PASSWORD, PG_PORT, PG_USER
+from DatabaseConfig import PG_DBNAME, PG_PASSWORD, PG_PORT, PG_USER, PG_HOST
 
 class Database():
     def __init__(self):
         try:
             self.conn = psycopg2.connect(
-                host="localhost",
+                host=PG_HOST,
                 port=PG_PORT,
                 database=PG_DBNAME,
                 user=PG_USER,
