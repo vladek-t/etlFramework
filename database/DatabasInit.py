@@ -1,4 +1,4 @@
-from db_connect import Database
+from database.DatabaseConnect import Database
 from loguru import logger
 
 class InitDatabase(Database):

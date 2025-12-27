@@ -1,5 +1,5 @@
 import datetime
-from init_db import InitDatabase
+from database.DatabasInit import InitDatabase
 
 class InsertData(InitDatabase):
     def __init__(self, table_name):
