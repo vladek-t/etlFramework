@@ -1,3 +1,7 @@
+"""
+Файл подключения к БД, передает необходимые атрибуты в наследуемые классы
+"""
+
 from loguru import logger
 import psycopg2
 from DatabaseConfig import PG_DBNAME, PG_PASSWORD, PG_PORT, PG_USER
@@ -22,6 +26,3 @@ class Database():
         self.cursor.close()
         self.conn.close()
         logger.info(f"Подключение закрыто")
-
-db = Database()
-db.close_connection()

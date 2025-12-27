@@ -1,3 +1,7 @@
+"""
+Файл инициализации базы данных, создает необходимые таблицы
+"""
+
 from database.DatabaseConnect import Database
 from loguru import logger
 

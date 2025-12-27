@@ -1,3 +1,7 @@
+"""
+Файл с конфигурацией подключения к БД
+"""
+
 import os
 from pathlib import Path
 from dotenv import load_dotenv
